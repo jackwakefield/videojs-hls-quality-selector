@@ -28,7 +28,8 @@ node_modules/
 # Yeoman meta-data
 .yo-rc.json
 
-# Build-related directories
+# Build-related
 dist/
 docs/api/
 test/dist/
+.eslintcache

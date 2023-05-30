@@ -1,34 +1,37 @@
 /**
  * Rollup configuration for packaging the plugin in a module that is consumable
- * by either CommonJS (e.g. Node or Browserify) or ECMAScript (e.g. Rollup).
+ * as the `src` of a `script` tag or via AMD or similar client-side loading.
  *
- * These modules DO NOT include their dependencies as we expect those to be
- * handled by the module system.
+ * This module DOES include its dependencies.
  */
 import babel from 'rollup-plugin-babel';
+import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
+import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-  name: 'videojsHlsQualitySelector',
   input: 'src/plugin.js',
-  output: [{
-    file: 'dist/videojs-hls-quality-selector.cjs.js',
-    format: 'cjs'
-  }, {
-    file: 'dist/videojs-hls-quality-selector.es.js',
-    format: 'es'
-  }],
+  output: {
+    name: 'videojsHlsQualitySelector',
+    file: 'dist/videojs-hls-quality-selector.js',
+    format: 'umd',
+    globals: {
+      'video.js': 'videojs'
+    },
+  },
   external: [
-    'global',
-    'global/document',
-    'global/window',
     'video.js'
   ],
-  globals: {
-    'video.js': 'videojs'
-  },
   plugins: [
+    resolve({
+      browser: true,
+      main: true,
+      jsnext: true
+    }),
     json(),
+    commonjs({
+      sourceMap: false
+    }),
     babel({
       babelrc: false,
       exclude: 'node_modules/**',

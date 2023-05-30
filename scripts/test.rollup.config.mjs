@@ -1,28 +1,37 @@
 /**
- * Rollup configuration for packaging the plugin in a module that is consumable
- * as the `src` of a `script` tag or via AMD or similar client-side loading.
+ * Rollup configuration for packaging the plugin in a test bundle.
  *
- * This module DOES include its dependencies.
+ * This includes all dependencies for both the plugin and its tests.
  */
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
+import multiEntry from 'rollup-plugin-multi-entry';
 import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-  name: 'videojsHlsQualitySelector',
-  input: 'src/plugin.js',
+  input: 'test/**/*.test.js',
   output: {
-    file: 'dist/videojs-hls-quality-selector.js',
-    format: 'umd'
+    name: 'videojsHlsQualitySelectorTests',
+    file: 'test/dist/bundle.js',
+    format: 'iife',
+    globals: {
+      'qunit': 'QUnit',
+      'qunitjs': 'QUnit',
+      'sinon': 'sinon',
+      'video.js': 'videojs'
+    },
   },
   external: [
+    'qunit',
+    'qunitjs',
+    'sinon',
     'video.js'
   ],
-  globals: {
-    'video.js': 'videojs'
-  },
   plugins: [
+    multiEntry({
+      exports: false
+    }),
     resolve({
       browser: true,
       main: true,
